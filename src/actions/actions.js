@@ -31,7 +31,7 @@ export const loginAction = (username, password) => dispatch => {
         JSON.stringify({
           isLoggedIn,
           totalSearches: getTotalSearches(isLoggedIn, username),
-          username
+          username: isLoggedIn ? username : ''
         })
       );
       dispatch({
@@ -44,7 +44,8 @@ export const loginAction = (username, password) => dispatch => {
         "payload",
         JSON.stringify({
           isLoggedIn: false,
-          totalSearches: 0
+          totalSearches: 0,
+          username: ''
         })
       );
       dispatch({
