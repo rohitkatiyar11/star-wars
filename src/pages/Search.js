@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import SListItem from "./ListItem";
 import { getPlanetsAction } from "../actions/actions";
+import config from "../config";
 
 export class Search extends React.Component {
   constructor(props, context) {
@@ -20,7 +21,8 @@ export class Search extends React.Component {
     this.state = {
       searchString: "",
       items: [],
-      searching: false
+      searching: false,
+      seconds: 0
     };
     this.onInputChange = this.onInputChange.bind(this);
   }
@@ -38,18 +40,47 @@ export class Search extends React.Component {
     );
   }
 
+  timeLogic() {
+    const payload = this.getUserPayload();
+    payload.totalSearches -= 1;
+    if (!payload.searchAt) {
+      payload.searchAt = new Date();
+    } else {
+      const currentTime = new Date();
+      const diff = currentTime.getTime() - new Date(payload.searchAt).getTime();
+      const seconds = Math.floor(diff / 1000);
+      if (seconds >= 60) {
+        payload.searchAt = new Date();
+        payload.totalSearches =
+          config.username === payload.username ? 1000 : 15;
+      }
+      this.setState({ seconds });
+    }
+    localStorage.setItem("payload", JSON.stringify(payload));
+  }
+
   searching() {
-    this.props.getPlanetsAction(this.state.searchString).then(() => {
-      this.setState({
-        items: this.props.planets.data || [],
-        searching: false
+    this.timeLogic();
+    const totalSearches = this.getUserPayload().totalSearches || 0;
+    if (totalSearches > 0) {
+      this.props.getPlanetsAction(this.state.searchString).then(() => {
+        this.setState({
+          items: this.props.planets.data || [],
+          searching: false
+        });
       });
-    });
+    } else {
+      alert(
+        `Searching limit exhausted, Kindly wait for ${60 -
+          this.state.seconds} seconds`
+      );
+      this.setState({ searching: false });
+    }
   }
 
   getUserPayload() {
     const payload = localStorage.getItem("payload");
-    return payload && typeof payload == "object" ? JSON.parse(payload) : {};
+    return payload ? JSON.parse(payload) : {};
   }
 
   getHeight(population) {
@@ -66,7 +97,7 @@ export class Search extends React.Component {
         <Grid container>
           <Grid xs={10} md={11} item style={{ paddingRight: 16 }}>
             <TextField
-              placeholder="Search planets (type atleast 2 charators)"
+              placeholder="Search planets (type atleast 2 charators, example: 'al')"
               value={this.state.searchString}
               onChange={this.onInputChange}
               fullWidth

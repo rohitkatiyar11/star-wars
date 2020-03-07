@@ -26,7 +26,7 @@ class Header extends React.Component {
   logout() {
     localStorage.setItem(
       "payload",
-      JSON.stringify({ isLoggedIn: false, totalSearches: 0 })
+      JSON.stringify({ isLoggedIn: false, totalSearches: 0, username: "" })
     );
     window.location.href = "/";
   }
@@ -49,7 +49,7 @@ class Header extends React.Component {
       <div className={classes.root}>
         <AppBar position="static" style={{ ...menuStyle, ...style.appBar }}>
           <Toolbar variant="dense">
-            {payload.username && (
+            {payload && payload.username && (
               <h4>
                 <i>Hey {payload.username} !</i>
               </h4>
