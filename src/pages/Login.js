@@ -18,6 +18,12 @@ export class Login extends React.Component {
     this.submit = this.submit.bind(this);
   }
 
+  componentWillMount() {
+    let payload = localStorage.getItem("payload");
+    payload = JSON.parse(payload);
+    payload && payload.isLoggedIn && this.props.history.push(`/search`);
+  }
+
   getData(e) {
     const data = this.state;
     data[e.target.name] = e.target.value;

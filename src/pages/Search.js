@@ -27,6 +27,14 @@ export class Search extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
   }
 
+  componentWillMount() {
+    let payload = localStorage.getItem("payload");
+    payload = JSON.parse(payload);
+    if (!payload.isLoggedIn) {
+      window.location.href = "/";
+    }
+  }
+
   onInputChange(e) {
     this.setState(
       {
