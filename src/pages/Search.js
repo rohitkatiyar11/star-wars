@@ -35,6 +35,7 @@ export class Search extends React.Component {
       window.location.href = "/";
     } else {
       this.setState({renderSearch: true});
+    }
   }
 
   onInputChange(e) {
