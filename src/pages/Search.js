@@ -22,7 +22,8 @@ export class Search extends React.Component {
       searchString: "",
       items: [],
       searching: false,
-      seconds: 0
+      seconds: 0, 
+      renderSearch: false
     };
     this.onInputChange = this.onInputChange.bind(this);
   }
@@ -32,7 +33,8 @@ export class Search extends React.Component {
     payload = JSON.parse(payload);
     if (!payload || !payload.isLoggedIn) {
       window.location.href = "/";
-    }
+    } else {
+      this.setState({renderSearch: true});
   }
 
   onInputChange(e) {
@@ -99,7 +101,7 @@ export class Search extends React.Component {
   }
 
   render() {
-    return (
+    return this.state.renderSearch ? (
       <Paper style={{ margin: 16, padding: 16 }}>
         {this.state.searching && <LinearProgress color="secondary" />}
         <Grid container>
@@ -146,7 +148,7 @@ export class Search extends React.Component {
             )}
         </Paper>
       </Paper>
-    );
+    ) : (<div></div>);
   }
 }
 
