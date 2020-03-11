@@ -30,7 +30,7 @@ export class Search extends React.Component {
   componentWillMount() {
     let payload = localStorage.getItem("payload");
     payload = JSON.parse(payload);
-    if (!payload.isLoggedIn) {
+    if (!payload || !payload.isLoggedIn) {
       window.location.href = "/";
     }
   }
